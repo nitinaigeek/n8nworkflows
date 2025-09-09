@@ -1,0 +1,161 @@
+{
+  "name": "{   \"nodes\": [     {       \"parameters\": {         \"formTitle\": \"Request an installation\",         \"formDescription\": \"Fill out",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Request an installation",
+        "formDescription": "Fill out this form to request an installation. We'll reach out to you via email to finalize your appointment.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Email Address",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred Installation Date",
+              "fieldType": "date",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -368,
+        0
+      ],
+      "id": "e53c7b83-e804-4451-ac9c-5b069db10fb2",
+      "name": "On form submission",
+      "webhookId": "05bd9178-c48c-4cec-8f81-3cc1d839d9e5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "55644723-8720-4d4e-a360-0e7f250cbc71",
+              "leftValue": "={{ $json['Preferred Installation Date'].toDateTime() }}",
+              "rightValue": "={{ $now.plus(7,'days') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "4017a3c1-2653-463e-be71-5bb9b2180187",
+      "name": "Is within 7 days?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        48,
+        96
+      ],
+      "id": "11c31c68-24d3-46d2-9d25-a4e83165ce4b",
+      "name": "TODO"
+    },
+    {
+      "parameters": {
+        "sendTo": "nitinaigeek@gmail.com",
+        "subject": "=Installation request by customer",
+        "emailType": "text",
+        "message": "=New install request within (7 days) :\nContact email: {{ $json['Email Address'] }}\nPreferred installation date: {{ $json['Preferred Installation Date'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        -96
+      ],
+      "id": "4b3ea405-7c53-4f89-b2fb-5012be3f01de",
+      "name": "Send a message",
+      "webhookId": "a23001a6-19c5-4727-bafe-cc706c94f067",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MYEY78Jh34ZJiYpn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Installation email\n\nThis workflow send email if the installation request is with in the next 7 days"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -208
+      ],
+      "id": "4817c0b7-75fe-4250-90ed-bdf1d59daeb7",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Is within 7 days?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is within 7 days?": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "TODO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cc5b4b36-fa80-43d2-ae85-1cb136284348",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bbdd637d2620efd8257e76341553d14ceb6327257d1d9eebcbc547dcadec75bd"
+  },
+  "id": "GC9c9KjudIadixOE",
+  "tags": []
+}
